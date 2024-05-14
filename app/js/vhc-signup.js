@@ -95,7 +95,7 @@ Vz.Widgets.VHC = function (config) {
         if (isValid) {
             $(self.element).addClass('loading');
             $.ajax({
-                url: 'https://test-site.virtuozzo.com/vhc-signup/sign-up.php',
+                url: 'https://www.virtuozzo.com/vhc-signup/sign-up.php',
                 type: "POST",
                 dataType: 'json',
                 data: $(self.form).serialize(),
@@ -419,7 +419,7 @@ jQuery(document).ready(function ($) {
 
     if ($VHC.length > 0) {
 
-        Vz.utils.loadDistis(['https://test-site.virtuozzo.com/vhc-signup/distributors.js'], function() {
+        Vz.utils.loadDistis(['https://www.virtuozzo.com/vhc-signup/distributors.js'], function() {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const distributor = urlParams.get('distributor');
