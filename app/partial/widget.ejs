@@ -69,7 +69,7 @@
                 </div>
             </div>
             <div id="vhc-step-2" class="vhc-step">
-                <h3>Account Setup</h3>
+                <h3>Account Setup and Billing Address</h3>
                 <p class="step-description">Finally, please create a secure password for your account, and provide your
                     business billing address
                     and contact number.</p>
@@ -408,7 +408,7 @@
                     <% for (var i = 0, oDistributor; oDistributor = oDistributors[i]; i++) { %>
                         <div class="distributor">
                             <div class="distributor-inner">
-                                <div class="logo"><img src="<%= baseUrl %>vhc-signup/img/logos/<%= oDistributor.img %>"
+                                <div class="logo"><img src="https://www.virtuozzo.com/vhc-signup/img/logos/<%= oDistributor.img %>"
                                                        alt="<%= oDistributor.name %>"></div>
                                 <div class="loc"><span><%= oDistributor.location %></span></div>
                                 <input type="radio" name="hoster_link" value="<%= oDistributor.key %>"
