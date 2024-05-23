@@ -3,7 +3,8 @@ Vz.Widgets = Vz.Widgets || {};
 Vz.Widgets.VHC = function (config) {
     var self = this;
     self.element = config.oElement;
-    self.sKey = config.sKey || false;
+    self.preKey = config.preKey || false;
+    self.sKey = false;
     self.form = false;
     self.currentStep = 0;
     self.slider = false;
@@ -13,15 +14,20 @@ Vz.Widgets.VHC = function (config) {
 
     self.render = function (options) {
 
-        if (self.sKey) {
+        if (self.preKey) {
             Vz.Widgets.Distributors = Vz.Widgets.Distributors.filter(Disti => {
-                return Disti.name.toLowerCase() === self.sKey.toLowerCase()
+                return Disti.preKey.toLowerCase() === self.preKey.toLowerCase()
             })
             if (Vz.Widgets.Distributors.length === 0) {
+                $(self.element).removeClass('loading').addClass('loading-error');
                 console.error('Data-Key is not valid');
                 return false;
             }
             self.sKey = Vz.Widgets.Distributors[0].key;
+        } else {
+            Vz.Widgets.Distributors = Vz.Widgets.Distributors.filter(Disti => {
+                return Disti.active === true;
+            })
         }
 
         sHtml = new EJS({url: self.baseUrl + 'vhc-signup/partial/widget'}).render({
@@ -72,7 +78,6 @@ Vz.Widgets.VHC = function (config) {
     }
 
     self.changePhone = function () {
-        // console.log($(self.element).find('#country').val())
         self.iti.setCountry($(self.element).find('#country').val());
     }
 
@@ -193,7 +198,7 @@ Vz.Widgets.VHC = function (config) {
                         var result = Vz.Widgets.Distributors.filter(obj => {
                             return obj.isDefFor.includes(continent)
                         });
-                        if (result[0].key) {
+                        if (result.length && result[0].key) {
                             var defHoster = $(self.element).find('input[value="' + result[0].key + '"]').closest('.distributor');
                             $(self.element).find('.distributors-slider').prepend(defHoster);
                         }
@@ -222,7 +227,7 @@ Vz.Widgets.VHC = function (config) {
                     self.slider.slick('setPosition');
                 } else {
                     self.slider.addClass('with-key');
-                    self.slider.find('input[value='+ self.sKey +']').attr('checked', 'checked');
+                    self.slider.find('input').attr('checked', 'checked');
                 }
             }
 
@@ -429,10 +434,10 @@ jQuery(document).ready(function ($) {
                     oElement: this
                 };
                 if (this.getAttribute('data-key')) {
-                    oAtts['sKey'] = this.getAttribute('data-key');
+                    oAtts['preKey'] = this.getAttribute('data-key');
                 }
                 if (distributor) {
-                    oAtts['sKey'] = distributor;
+                    oAtts['preKey'] = distributor;
                 }
                 $oVHCwidgets[index] = new Vz.Widgets.VHC(oAtts);
             });
