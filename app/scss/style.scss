@@ -37,6 +37,10 @@ $hoverColor: #9B2637;
   text-size-adjust: 100%;
   position: relative;
 
+  p {
+    line-height: 140%;
+  }
+
   &.loading {
     &:after {
       display: flex;
