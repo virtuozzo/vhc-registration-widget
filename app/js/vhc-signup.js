@@ -100,7 +100,10 @@ Vz.Widgets.VHC = function (config) {
         if (isValid) {
             $(self.element).addClass('loading');
             $.ajax({
-                url: 'https://www.virtuozzo.com/vhc-signup/sign-up.php',
+                url: 'https://mprocessing.virtuozzo.com/vhc-signup/sign-up.php',
+                headers: {
+                    'X-Check':'vz-0VYe+zINV0qhfJw'
+                },
                 type: "POST",
                 dataType: 'json',
                 data: $(self.form).serialize(),
