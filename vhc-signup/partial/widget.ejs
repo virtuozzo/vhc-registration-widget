@@ -408,17 +408,7 @@
                 </p>
 
                 <div class="distributors-slider">
-                    <% for (var i = 0, oDistributor; oDistributor = oDistributors[i]; i++) { %>
-                        <div class="distributor">
-                            <div class="distributor-inner">
-                                <div class="logo"><img
-                                            src="https://www.virtuozzo.com/vhc-signup/img/logos/<%= oDistributor.img %>"
-                                            alt="<%= oDistributor.name %>"></div>
-                                <div class="loc"><span><%= oDistributor.location %></span></div>
-                                <input type="radio" name="hoster_link" value="<%= oDistributor.key %>"
-                                       data-id="<%= oDistributor.id %>"></div>
-                        </div>
-                    <% } %>
+
                 </div>
                 <label for="data_disclosure_to_distributor" class="checkbox">
                     <input type="checkbox" id="data_disclosure_to_distributor"

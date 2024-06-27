@@ -11,27 +11,24 @@ Vz.Widgets.VHC = function (config) {
     self.baseUrl = self.element.getAttribute('data-base-url') || window.location.protocol + '//' + window.location.host + '/';
     self.PersonalInfoSent = false;
     self.defHoster = false;
+    self.pardotTracking = self.element.getAttribute('data-tracking') ? JSON.parse(self.element.getAttribute('data-tracking').toLowerCase()) : true;
+    self.availableDistis = {};
 
     self.render = function (options) {
 
         if (self.preKey) {
-            Vz.Widgets.Distributors = Vz.Widgets.Distributors.filter(Disti => {
-                return Disti.preKey.toLowerCase() === self.preKey.toLowerCase()
+            self.availableDistis = Vz.Widgets.Distributors.filter(oDisti => {
+                return oDisti.preKey.toLowerCase() === self.preKey.toLowerCase()
             })
-            if (Vz.Widgets.Distributors.length === 0) {
+            if (self.availableDistis.length === 0) {
                 $(self.element).removeClass('loading').addClass('loading-error');
                 console.error('Data-Key is not valid');
                 return false;
             }
-            self.sKey = Vz.Widgets.Distributors[0].key;
-        } else {
-            Vz.Widgets.Distributors = Vz.Widgets.Distributors.filter(Disti => {
-                return Disti.active === true;
-            })
+            self.sKey = self.availableDistis[0].key;
         }
 
         sHtml = new EJS({url: self.baseUrl + 'vhc-signup/partial/widget'}).render({
-            oDistributors: Vz.Widgets.Distributors,
             baseUrl: self.baseUrl,
             sKey: self.sKey
         });
@@ -39,7 +36,7 @@ Vz.Widgets.VHC = function (config) {
 
         self.form = $(self.element).find('form');
 
-        self.form.find('#password').on('keyup', function (){
+        self.form.find('#password').on('keyup', function () {
             var resp = Vz.utils.isPasswordValid($(self.form).find('[name=password]').val());
             if (resp.bar === 0) {
                 $('.password-status').removeClass('show');
@@ -51,7 +48,7 @@ Vz.Widgets.VHC = function (config) {
             $('.pass-status-label').text(resp.message);
         })
 
-        self.form.find('#password-2').on('change', function (){
+        self.form.find('#password-2').on('change', function () {
             if (self.form.find('#password').val() !== $(this).val()) {
                 Vz.Widgets.Modal.show(self.form.find('#password-2'), {
                     msg: 'The passwords entered do not match',
@@ -82,15 +79,17 @@ Vz.Widgets.VHC = function (config) {
     }
 
     self.trackSalesForce = function (sURL, oParams) {
-        $.ajax({
-            url: sURL,
-            type: "GET",
-            dataType: "jsonp",
-            data: oParams,
-            done: function (data) {
-                alert(data);
-            }
-        });
+        if (self.pardotTracking) {
+            $.ajax({
+                url: sURL,
+                type: "GET",
+                dataType: "jsonp",
+                data: oParams,
+                done: function (data) {
+                    alert(data);
+                }
+            });
+        }
     }
 
     self.submit = function (e) {
@@ -102,7 +101,7 @@ Vz.Widgets.VHC = function (config) {
             $.ajax({
                 url: 'https://mprocessing.virtuozzo.com/vhc-signup/sign-up.php',
                 headers: {
-                    'X-Check':'vz-0VYe+zINV0qhfJw'
+                    'X-vz-0VYe+zINV0qhfJw': 'X-Check'
                 },
                 type: "POST",
                 dataType: 'json',
@@ -133,23 +132,25 @@ Vz.Widgets.VHC = function (config) {
                         }
                     }
                 } else {
-                    self.trackSalesForce('https://go.virtuozzo.com/l/148051/2024-03-05/7gdygc', {
-                        firstName: $(self.form).find('[name=firstName]').val(),
-                        lastName: $(self.form).find('[name=lastName]').val(),
-                        email: $(self.form).find('[name=email]').val(),
-                        company: $(self.form).find('[name=company]').val(),
-                        street: $(self.form).find('[name=street]').val(),
-                        country: $(self.form).find('[name=country] option:selected').text(),
-                        city: $(self.form).find('[name=city]').val(),
-                        state: $(self.form).find('[name=state]').val(),
-                        phone: $(self.form).find('[name=phone]').val(),
-                        postcode: $(self.form).find('[name=postcode]').val(),
-                        partnerId: self.slider.find('input:checked').attr('data-id'),
-                        newsletter: self.form.find('#newsletter').is(':checked'),
-                        terms: self.form.find('#terms').is(':checked'),
-                        trial: self.form.find('#trial').is(':checked'),
-                        data_disclosure_to_distributor: self.form.find('#data_disclosure_to_distributor').is(':checked'),
-                    });
+                    if (self.pardotTracking) {
+                        self.trackSalesForce('https://go.virtuozzo.com/l/148051/2024-03-05/7gdygc', {
+                            firstName: $(self.form).find('[name=firstName]').val(),
+                            lastName: $(self.form).find('[name=lastName]').val(),
+                            email: $(self.form).find('[name=email]').val(),
+                            company: $(self.form).find('[name=company]').val(),
+                            street: $(self.form).find('[name=street]').val(),
+                            country: $(self.form).find('[name=country] option:selected').text(),
+                            city: $(self.form).find('[name=city]').val(),
+                            state: $(self.form).find('[name=state]').val(),
+                            phone: $(self.form).find('[name=phone]').val(),
+                            postcode: $(self.form).find('[name=postcode]').val(),
+                            partnerId: self.slider.find('input:checked').attr('data-id'),
+                            newsletter: self.form.find('#newsletter').is(':checked'),
+                            terms: self.form.find('#terms').is(':checked'),
+                            trial: self.form.find('#trial').is(':checked'),
+                            data_disclosure_to_distributor: self.form.find('#data_disclosure_to_distributor').is(':checked'),
+                        });
+                    }
                     $(self.element).addClass('success');
                 }
 
@@ -188,31 +189,54 @@ Vz.Widgets.VHC = function (config) {
             $(self.element).find('.vhc-singup-left ul li a.active').removeClass('active');
             $(self.element).find('.vhc-singup-left ul li').eq(self.currentStep).find('a').addClass('active');
 
-            self.slider = $(self.element).find('.distributors-slider');
-            self.slider.on('init', function(event, slick){
-                self.slider.find('[data-slick-index=0] input').attr('checked', 'checked');
-            });
             if (self.currentStep == 2) {
-                if (!self.sKey) {
 
-                    // find Disti by chosen country
-                    if (!self.defHoster) {
-                        var continent = Vz.Widgets.countryContinent[$(self.form).find('[name=country]').val()];
-                        var result = Vz.Widgets.Distributors.filter(obj => {
-                            return obj.isDefFor.includes(continent)
-                        });
-                        if (result.length && result[0].key) {
-                            var defHoster = $(self.element).find('input[value="' + result[0].key + '"]').closest('.distributor');
-                            $(self.element).find('.distributors-slider').prepend(defHoster);
+                initialslide = 0;
+                if (!self.sKey) {
+                    // remove inactive distis
+                    self.availableDistis = Vz.Widgets.Distributors.filter(oDisti => {
+                        return oDisti.active === true;
+                    })
+                    // check is available disti for chose country
+                    self.availableDistis = self.availableDistis.filter(oDisti => {
+                        if (oDisti.availableFor.length) {
+                            return oDisti.availableFor.includes($(self.form).find('[name=country]').val());
+                        } else {
+                            return true;
                         }
-                        self.defHoster = true;
+                    });
+                    while (self.availableDistis.length <= 3) {
+                        self.availableDistis = self.availableDistis.concat(self.availableDistis);
                     }
+                }
+
+                // render distis slider
+                sHtml = new EJS({url: self.baseUrl + 'vhc-signup/partial/distis'}).render({
+                    oDistributors: self.availableDistis
+                });
+                $(self.element).find('.distributors-slider').replaceWith(sHtml);
+                self.slider = $(self.element).find('.distributors-slider');
+
+                if (!self.sKey) {
+                    // find recommended disti by region
+                    var continent = Vz.Widgets.countryContinent[$(self.form).find('[name=country]').val()];
+                    var result = self.availableDistis.filter(oDisti => {
+                        return oDisti.isDefFor.includes(continent)
+                    });
+                    if (result.length && result[0].key) {
+                        var defHoster = $(self.element).find('input[value="' + result[0].key + '"]').closest('.distributor');
+                        var initialslide = self.slider.find('.distributor').index(defHoster[0]);
+                    }
+                    self.slider.on('init', function (event, slick) {
+                        self.slider.find('[data-slick-index='+initialslide+'] input').attr('checked', 'checked');
+                    });
 
                     // init slider
-                    self.slider.not('.slick-initialized').slick({
+                    self.slider.slick({
                         slidesToShow: 3,
                         centerMode: true,
                         centerPadding: 0,
+                        initialSlide: parseInt(initialslide),
                         responsive: [
                             {
                                 breakpoint: 475,
@@ -227,7 +251,7 @@ Vz.Widgets.VHC = function (config) {
                         self.slider.find('input').attr('checked', false);
                         self.slider.find('.distributor[data-slick-index=' + currentSlide + '] input').attr('checked', 'checked');
                     });
-                    self.slider.slick('setPosition');
+                    // self.slider.slick('setPosition');
                 } else {
                     self.slider.addClass('with-key');
                     self.slider.find('input').attr('checked', 'checked');
@@ -275,7 +299,6 @@ Vz.Widgets.VHC = function (config) {
 
         switch (self.currentStep) {
             case 1:
-                // console.log('step 1')
                 var passValid = Vz.utils.isPasswordValid($(self.form).find('[name=password]').val());
                 if (passValid.bar === 0) {
                     isValid = false;
@@ -427,7 +450,7 @@ jQuery(document).ready(function ($) {
 
     if ($VHC.length > 0) {
 
-        Vz.utils.loadDistis(['https://www.virtuozzo.com/vhc-signup/distributors.js'], function() {
+        Vz.utils.loadDistis(['https://test-site.virtuozzo.com/vhc-signup/distributors.js'], function () {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const distributor = urlParams.get('distributor');

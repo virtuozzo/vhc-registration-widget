@@ -65,7 +65,7 @@ Vz.utils = (function (that) {
             }
         }
 
-        if (field.val().length < 2) {
+        if (field.val().trim().length < 2) {
             isValid = false;
             Vz.Widgets.Modal.show(field, {
                 msg: 'This field is required',
