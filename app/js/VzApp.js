@@ -1,7 +1,7 @@
 Vz = window.Vz || {};
 $ = $ || jQuery;
 
-Vz.Widgets =(function (that) {
+Vz.Widgets = (function (that) {
 
 
 }(Vz.Widgets || {}));
@@ -33,6 +33,13 @@ Vz.utils = (function (that) {
         }
     }
 
+    that.isGoodEmail = function (email) {
+        if (/(gmail)\.com$/.test(email)) {
+            return false;
+        }
+        return true;
+    }
+
     that.isValidEmail = function (email) {
         var pattern = /.@./;
         return pattern.test(email);
@@ -48,9 +55,17 @@ Vz.utils = (function (that) {
                     msg: 'The e-mail value is not valid',
                     position: 'bottom'
                 });
-
                 return isValid;
             }
+            if (!Vz.utils.isGoodEmail(field.val())) {
+                isValid = false;
+                Vz.Widgets.Modal.show(field, {
+                    msg: 'Please enter a valid business email address',
+                    position: 'bottom'
+                });
+                return isValid;
+            }
+
         }
 
         if (type === 'checkbox') {
