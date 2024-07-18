@@ -16,6 +16,7 @@ Vz.Widgets.VHC = function (config) {
 
     self.render = function (options) {
 
+        var name = '';
         if (self.preKey) {
             self.availableDistis = Vz.Widgets.Distributors.filter(oDisti => {
                 return oDisti.preKey.toLowerCase() === self.preKey.toLowerCase()
@@ -26,11 +27,13 @@ Vz.Widgets.VHC = function (config) {
                 return false;
             }
             self.sKey = self.availableDistis[0].key;
+            name = self.availableDistis[0].name;
         }
 
         sHtml = new EJS({url: self.baseUrl + 'vhc-signup/partial/widget'}).render({
             baseUrl: self.baseUrl,
-            sKey: self.sKey
+            sKey: self.sKey,
+            sName: name
         });
         $(self.element).append(sHtml);
 
