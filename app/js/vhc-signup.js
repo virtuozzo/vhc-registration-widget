@@ -13,6 +13,7 @@ Vz.Widgets.VHC = function (config) {
     self.defHoster = false;
     self.pardotTracking = self.element.getAttribute('data-tracking') ? JSON.parse(self.element.getAttribute('data-tracking').toLowerCase()) : true;
     self.availableDistis = {};
+    self.testing = self.element.getAttribute('data-testing') ? true : false;
 
     self.render = function (options) {
 
@@ -33,7 +34,8 @@ Vz.Widgets.VHC = function (config) {
         sHtml = new EJS({url: self.baseUrl + 'vhc-signup/partial/widget'}).render({
             baseUrl: self.baseUrl,
             sKey: self.sKey,
-            sName: name
+            sName: name,
+            testing: self.testing
         });
         $(self.element).append(sHtml);
 
@@ -82,6 +84,16 @@ Vz.Widgets.VHC = function (config) {
     }
 
     self.trackSalesForce = function (sURL, oParams) {
+        // $.ajax({
+        //     url: 'https://mprocessing.virtuozzo.com/vhc-signup/trackPardot.php',
+        //     headers: {
+        //         'X-vz-0VYe+zINV0qhfJw': 'X-Check'
+        //     },
+        //     type: "POST",
+        //     data: oParams,
+        // }).done(function (response) {
+        //     alert(response)
+        // });
         if (self.pardotTracking) {
             $.ajax({
                 url: sURL,
@@ -200,15 +212,29 @@ Vz.Widgets.VHC = function (config) {
                     self.availableDistis = Vz.Widgets.Distributors.filter(oDisti => {
                         return oDisti.active === true;
                     })
-                    // check is available disti for chose country
+
+                    // check is available disti for chose region
+                    var userCountry = $(self.form).find('[name=country]').val();
+                    var userRegion = Vz.Widgets.countryContinentNEW[$(self.form).find('[name=country]').val()];
                     self.availableDistis = self.availableDistis.filter(oDisti => {
-                        if (oDisti.availableFor.length) {
-                            return oDisti.availableFor.includes($(self.form).find('[name=country]').val());
+                        if (oDisti.regions.length) {
+                            return oDisti.regions.includes(userRegion);
                         } else {
                             return true;
                         }
                     });
-                    while (self.availableDistis.length <= 3) {
+
+                    // check is available disti for chose country
+                    self.availableDistis = self.availableDistis.filter(oDisti => {
+                        if (oDisti.countries.length) {
+                            return oDisti.countries.includes(userCountry);
+                        } else {
+                            return true;
+                        }
+                    });
+
+                    // duplicating if available distis are not enough to creating slider
+                    while (self.availableDistis.length > 1 && self.availableDistis.length <= 3) {
                         self.availableDistis = self.availableDistis.concat(self.availableDistis);
                     }
                 }
@@ -220,7 +246,7 @@ Vz.Widgets.VHC = function (config) {
                 $(self.element).find('.distributors-slider').replaceWith(sHtml);
                 self.slider = $(self.element).find('.distributors-slider');
 
-                if (!self.sKey) {
+                if (!self.sKey && (self.availableDistis.length > 1)) {
                     // find recommended disti by region
                     var continent = Vz.Widgets.countryContinent[$(self.form).find('[name=country]').val()];
                     var result = self.availableDistis.filter(oDisti => {
@@ -383,6 +409,9 @@ Vz.Widgets.VHC = function (config) {
     }
 
     if (self.element) {
+        if (self.testing) {
+            self.pardotTracking = false;
+        }
         self.render();
     } else {
         throw new Error('Oops! Something was wrong!');
@@ -453,7 +482,7 @@ jQuery(document).ready(function ($) {
 
     if ($VHC.length > 0) {
 
-        Vz.utils.loadDistis(['https://www.virtuozzo.com/vhc-signup/distributors.js'], function () {
+        Vz.utils.loadDistis(['https://test-site.virtuozzo.com/vhc-signup/distributors.js'], function () {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const distributor = urlParams.get('distributor');

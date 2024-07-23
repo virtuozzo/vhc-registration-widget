@@ -19,13 +19,13 @@
                         <label for="firstName" class="sr-only">
                             First name
                         </label>
-                        <input type="text" id="firstName" name="firstName" placeholder="First Name *" value="">
+                        <input type="text" id="firstName" name="firstName" placeholder="First Name *" value="<% if(testing) { %>test-virtuozzo<% } %>">
                     </div>
                     <div class="form-field">
                         <label for="lastName" class="sr-only">
                             Last name
                         </label>
-                        <input type="text" id="lastName" name="lastName" placeholder="Last Name *" value="">
+                        <input type="text" id="lastName" name="lastName" placeholder="Last Name *" value="<% if(testing) { %>test-virtuozzo<% } %>">
                     </div>
                 </div>
                 <div class="form-row">
@@ -34,13 +34,13 @@
                             Email
                         </label>
                         <input type="text" id="email" name="email" placeholder="Email *"
-                               value="">
+                               value="<% if(testing) { %>test@virtuozzo.com<% } %>">
                     </div>
                     <div class="form-field">
                         <label for="company" class="sr-only">
                             Company
                         </label>
-                        <input type="text" id="company" name="company" placeholder="Company *" value="">
+                        <input type="text" id="company" name="company" placeholder="Company *" value="<% if(testing) { %>virtuozzo<% } %>">
                     </div>
                 </div>
                 <label for="newsletter" class="checkbox">
@@ -89,13 +89,13 @@
                             <p><strong>Tips for a good password</strong><br/>Use both upper and lowercase characters<br/>Include at least one symbol (# $ ! % & etc...)<br/>Don't use dictionary words</p>
                         </span>
                         <input type="password" id="password" name="password" placeholder="Password *"
-                               value="">
+                               value="<% if(testing) { %>123virtuozzo123<% } %>">
                     </div>
                     <div class="form-field">
                         <label for="password-2" class="sr-only">
                             Confirm Password
                         </label>
-                        <input type="password" id="password-2" name="password-2" placeholder="Confirm Password *">
+                        <input type="password" id="password-2" name="password-2" placeholder="Confirm Password *" value="<% if(testing) { %>123virtuozzo123<% } %>">
                     </div>
                 </div>
                 <div class="form-row">
@@ -104,7 +104,7 @@
                             Street Address
                         </label>
                         <input type="text" id="street" name="street" placeholder="Street Address *"
-                               value="">
+                               value="<% if(testing) { %>test-virtuozzo<% } %>">
                     </div>
                     <div class="form-field">
                         <label for="country" class="sr-only">
@@ -119,7 +119,6 @@
                             <option value="AD">Andorra</option>
                             <option value="AO">Angola</option>
                             <option value="AI">Anguilla</option>
-                            <option value="AQ">Antarctica</option>
                             <option value="AG">Antigua And Barbuda</option>
                             <option value="AR">Argentina</option>
                             <option value="AM">Armenia</option>
@@ -148,7 +147,6 @@
                             <option value="KH">Cambodia</option>
                             <option value="CM">Cameroon</option>
                             <option value="CA">Canada</option>
-                            <option value="IC">Canary Islands</option>
                             <option value="CV">Cape Verde</option>
                             <option value="KY">Cayman Islands</option>
                             <option value="CF">Central African Republic</option>
@@ -186,7 +184,6 @@
                             <option value="FR">France</option>
                             <option value="GF">French Guiana</option>
                             <option value="PF">French Polynesia</option>
-                            <option value="TF">French Southern Territories</option>
                             <option value="GA">Gabon</option>
                             <option value="GM">Gambia</option>
                             <option value="GE">Georgia</option>
@@ -204,7 +201,6 @@
                             <option value="GW">Guinea-Bissau</option>
                             <option value="GY">Guyana</option>
                             <option value="HT">Haiti</option>
-                            <option value="HM">Heard Island &amp; Mcdonald Islands</option>
                             <option value="VA">Holy See (Vatican City State)</option>
                             <option value="HN">Honduras</option>
                             <option value="HK">Hong Kong</option>
@@ -264,7 +260,6 @@
                             <option value="NR">Nauru</option>
                             <option value="NP">Nepal</option>
                             <option value="NL">Netherlands</option>
-                            <option value="AN">Netherlands Antilles</option>
                             <option value="NC">New Caledonia</option>
                             <option value="NZ">New Zealand</option>
                             <option value="NI">Nicaragua</option>
@@ -283,7 +278,6 @@
                             <option value="PY">Paraguay</option>
                             <option value="PE">Peru</option>
                             <option value="PH">Philippines</option>
-                            <option value="PN">Pitcairn</option>
                             <option value="PL">Poland</option>
                             <option value="PT">Portugal</option>
                             <option value="PR">Puerto Rico</option>
@@ -312,7 +306,6 @@
                             <option value="SB">Solomon Islands</option>
                             <option value="SO">Somalia</option>
                             <option value="ZA">South Africa</option>
-                            <option value="GS">South Georgia And Sandwich Isl.</option>
                             <option value="ES">Spain</option>
                             <option value="LK">Sri Lanka</option>
                             <option value="SS">South Sudan</option>
@@ -340,7 +333,6 @@
                             <option value="AE">United Arab Emirates</option>
                             <option value="GB">United Kingdom</option>
                             <option value="US" selected="selected">United States</option>
-                            <option value="UM">United States Outlying Islands</option>
                             <option value="UY">Uruguay</option>
                             <option value="UZ">Uzbekistan</option>
                             <option value="VU">Vanuatu</option>
@@ -362,13 +354,13 @@
                             City
                         </label>
                         <input type="text" id="city" name="city" placeholder="City *"
-                               value="">
+                               value="<% if(testing) { %>test-virtuozzo<% } %>">
                     </div>
                     <div class="form-field">
                         <label for="state" class="sr-only">
                             State
                         </label>
-                        <input type="text" id="state" name="state" placeholder="State *">
+                        <input type="text" id="state" name="state" placeholder="State *" value="<% if(testing) { %>test-virtuozzo<% } %>">
                     </div>
                 </div>
                 <div class="form-row">
@@ -377,13 +369,13 @@
                             Phone Number
                         </label>
                         <input type="text" id="phone" name="phone" placeholder="Phone Number *"
-                               value="">
+                               value="<% if(testing) { %>test-virtuozzo<% } %>">
                     </div>
                     <div class="form-field">
                         <label for="postcode" class="sr-only">
                             Postcode
                         </label>
-                        <input type="text" id="postcode" name="postcode" placeholder="Postcode *">
+                        <input type="text" id="postcode" name="postcode" placeholder="Postcode *" value="<% if(testing) { %>test-virtuozzo<% } %>">
                     </div>
                 </div>
                 <div class="step-switcher">
