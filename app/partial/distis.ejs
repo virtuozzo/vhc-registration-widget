@@ -1,13 +1,51 @@
-<div class="distributors-slider">
-    <% for (var i = 0, oDistributor; oDistributor = oDistributors[i]; i++) { %>
-        <div class="distributor">
-            <div class="distributor-inner">
-                <div class="logo"><img
-                            src="https://www.virtuozzo.com/vhc-signup/img/logos/<%= oDistributor.img %>"
-                            alt="<%= oDistributor.name %>"></div>
-                <div class="loc"><span><%= oDistributor.location %></span></div>
-                <input type="radio" name="hoster_link" value="<%= oDistributor.key %>"
-                       data-id="<%= oDistributor.id %>"></div>
-        </div>
-    <% } %>
+<div class="vhc-step-3-inner">
+    <h3>Distribution Partner</h3>
+    <p class="step-description">
+        <% if (oDistributors.length == 1) { %>
+            Virtuozzo Hybrid Cloud is available through the network of certified distributors across
+            various
+            regions. Your selected distributor will collaborate closely with you to ensure the best
+            business
+            experience possible.
+        <% } else { %>
+            Here is the list of distributors that are authorized and certified to distribute Virtuozzo
+            Hybrid Cloud services. Your distributor will
+            take care of billing for usage beyond your free trial resource and time limit. You can see
+            all
+            distributors <a href="https://www.virtuozzo.com/value-added-distributors/"
+                            target="_blank">here</a>.
+        <% } %>
+    </p>
+
+    <div class="distributors-slider">
+        <% for (var i = 0, oDistributor; oDistributor = oDistributors[i]; i++) { %>
+            <div class="distributor">
+                <div class="distributor-inner">
+                    <div class="logo"><img
+                                src="https://www.virtuozzo.com/vhc-signup/img/logos/<%= oDistributor.img %>"
+                                alt="<%= oDistributor.name %>"></div>
+                    <div class="loc"><span><%= oDistributor.location %></span></div>
+                    <input type="radio" name="hoster_link" value="<%= oDistributor.key %>"
+                           data-id="<%= oDistributor.id %>"></div>
+            </div>
+        <% } %>
+    </div>
+    <label for="data_disclosure_to_distributor" class="checkbox">
+        <input type="checkbox" id="data_disclosure_to_distributor"
+               name="data_disclosure_to_distributor">
+        <span>I consent my data (name, company name, email, billing address and usage data) to be disclosed by the relevant Virtuozzo entity (as set out in the <a
+                    href="https://www.virtuozzo.com/legal/virtuozzo-hybrid-cloud-services-terms-and-conditions/"
+                    target="_blank">Terms of Service</a>) to the
+            <% if (oDistributors.length == 1) { %>
+                distributor <%= oDistributors[0].name %>,
+            <% } else { %>
+                selected distributor,
+            <% } %>
+            as described in the <a href="https://www.virtuozzo.com/legal/data-disclosure-notice"
+                                     target="_blank">Data Disclosure Notice</a>, for the purpose of me entering into a contract with that distributor for the usage of Virtuozzo Hybrid Cloud, as well as for the purpose of subsequent billing on completion of trial. I understand that I can withdraw my consent at any time by emailing <a
+                    href="mailto:privacy@virtuozzo.com">privacy@virtuozzo.com</a>. Virtuozzo processes personal data (personal information) as set out in its <a
+                    href="https://www.virtuozzo.com/legal/privacy-policy/"
+                    target="_blank">Privacy Notice</a> and, where relevant, its <a
+                    href="https://www.virtuozzo.com/legal/privacy-notice/#link13" target="_blank">California Privacy Rights Notice</a>. *</span>
+    </label>
 </div>

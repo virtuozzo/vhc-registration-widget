@@ -28,13 +28,10 @@ Vz.Widgets.VHC = function (config) {
                 return false;
             }
             self.sKey = self.availableDistis[0].key;
-            name = self.availableDistis[0].name;
         }
 
         sHtml = new EJS({url: self.baseUrl + 'vhc-signup/partial/widget'}).render({
             baseUrl: self.baseUrl,
-            sKey: self.sKey,
-            sName: name,
             testing: self.testing
         });
         $(self.element).append(sHtml);
@@ -207,6 +204,7 @@ Vz.Widgets.VHC = function (config) {
             if (self.currentStep == 2) {
 
                 initialslide = 0;
+                // sort distis if default isn't setup
                 if (!self.sKey) {
                     // remove inactive distis
                     self.availableDistis = Vz.Widgets.Distributors.filter(oDisti => {
@@ -243,7 +241,7 @@ Vz.Widgets.VHC = function (config) {
                 sHtml = new EJS({url: self.baseUrl + 'vhc-signup/partial/distis'}).render({
                     oDistributors: self.availableDistis
                 });
-                $(self.element).find('.distributors-slider').replaceWith(sHtml);
+                $(self.element).find('.vhc-step-3-inner').replaceWith(sHtml);
                 self.slider = $(self.element).find('.distributors-slider');
 
                 if (!self.sKey && (self.availableDistis.length > 1)) {
