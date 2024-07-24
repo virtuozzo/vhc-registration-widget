@@ -59,7 +59,7 @@ Vz.Widgets.VHC = function (config) {
             }
         });
 
-        $(self.element).find('.vhc-next').click(self.nextStep);
+        $(self.element).find('.vhc-next').click(self.checkStep);
         $(self.element).find('.vhc-prev').click(self.prevStep);
         $(self.element).find('[type="submit"]').click(self.submit);
         $(self.element).find('#country').change(self.changePhone);
@@ -81,27 +81,31 @@ Vz.Widgets.VHC = function (config) {
     }
 
     self.trackSalesForce = function (sURL, oParams) {
-        // $.ajax({
-        //     url: 'https://mprocessing.virtuozzo.com/vhc-signup/trackPardot.php',
-        //     headers: {
-        //         'X-vz-0VYe+zINV0qhfJw': 'X-Check'
-        //     },
-        //     type: "POST",
-        //     data: oParams,
-        // }).done(function (response) {
-        //     alert(response)
-        // });
-        if (self.pardotTracking) {
-            $.ajax({
-                url: sURL,
-                type: "GET",
-                dataType: "jsonp",
-                data: oParams,
-                done: function (data) {
-                    alert(data);
-                }
-            });
-        }
+        $(self.element).addClass('loading');
+        $.ajax({
+            url: 'https://mprocessing.virtuozzo.com/vhc-signup/trackPardot.php',
+            headers: {
+                'X-vz-0VYe+zINV0qhfJw': 'X-Check'
+            },
+            type: "POST",
+            data: {
+                formHandler: sURL,
+                oParams: oParams
+            }
+        }).done(function (response) {
+            $(self.element).removeClass('loading');
+            $response = JSON.parse(response);
+            if ($response.code === 0) {
+                self.PersonalInfoSent = true;
+                self.switchStep('next');
+            } else {
+                self.form.find('[name=email]').focus();
+                Vz.Widgets.Modal.show(self.form.find('[name=email]'), {
+                    msg: 'Please enter a valid business email address',
+                    position: 'bottom'
+                });
+            }
+        });
     }
 
     self.submit = function (e) {
@@ -172,26 +176,8 @@ Vz.Widgets.VHC = function (config) {
         }
     }
 
-    self.nextStep = function () {
-
-        var isValid = self.validStep();
-        if (isValid) {
-
-            // Sending personal info to SF
-            if (self.currentStep === 0 && self.PersonalInfoSent === false) {
-                self.trackSalesForce('https://go.virtuozzo.com/l/148051/2024-03-05/7gdy18', {
-                    firstName: $(self.form).find('[name=firstName]').val(),
-                    lastName: $(self.form).find('[name=lastName]').val(),
-                    email: $(self.form).find('[name=email]').val(),
-                    company: $(self.form).find('[name=company]').val(),
-                    newsletter: self.form.find('#newsletter').is(':checked'),
-                    terms: self.form.find('#terms').is(':checked'),
-                    trial: self.form.find('#trial').is(':checked'),
-                    registration_source: self.sKey || 'Virtuozzo'
-                });
-                self.PersonalInfoSent = true;
-            }
-
+    self.switchStep = function (step = 'next') {
+        if (step === 'next') {
             self.markAsValid(self.currentStep, true);
             self.currentStep += 1;
 
@@ -200,9 +186,47 @@ Vz.Widgets.VHC = function (config) {
 
             $(self.element).find('.vhc-singup-left ul li a.active').removeClass('active');
             $(self.element).find('.vhc-singup-left ul li').eq(self.currentStep).find('a').addClass('active');
+        } else {
+            self.currentStep -= 1;
+            if (self.currentStep < 0) {
+                self.currentStep = 0;
+            }
+            self.markAsValid(self.currentStep, false);
+            $(self.element).find('.vhc-step.active').removeClass('active');
+            $(self.element).find('.vhc-step').eq(self.currentStep).addClass('active');
 
-            if (self.currentStep == 2) {
+            $(self.element).find('.vhc-singup-left ul li a.active').removeClass('active');
+            $(self.element).find('.vhc-singup-left ul li').eq(self.currentStep).find('a').addClass('active');
+        }
+        self.scrollToActive();
+    }
 
+    self.checkStep = function () {
+
+        var isValid = self.validStep();
+        if (isValid) {
+
+            // Sending personal info to SF
+            if (self.currentStep === 0) {
+                if (self.PersonalInfoSent === false) {
+                    self.trackSalesForce('https://go.virtuozzo.com/l/148051/2024-03-05/7gdy18', {
+                        firstName: $(self.form).find('[name=firstName]').val(),
+                        lastName: $(self.form).find('[name=lastName]').val(),
+                        email: $(self.form).find('[name=email]').val(),
+                        company: $(self.form).find('[name=company]').val(),
+                        newsletter: self.form.find('#newsletter').is(':checked'),
+                        terms: self.form.find('#terms').is(':checked'),
+                        trial: self.form.find('#trial').is(':checked'),
+                        registration_source: self.sKey || 'Virtuozzo'
+                    });
+                } else {
+                    self.switchStep('next');
+                }
+                return;
+            }
+
+            if (self.currentStep === 1) {
+                self.switchStep('next');
                 initialslide = 0;
                 // sort distis if default isn't setup
                 if (!self.sKey) {
@@ -230,7 +254,6 @@ Vz.Widgets.VHC = function (config) {
                             return true;
                         }
                     });
-
                     // duplicating if available distis are not enough to creating slider
                     while (self.availableDistis.length > 1 && self.availableDistis.length <= 3) {
                         self.availableDistis = self.availableDistis.concat(self.availableDistis);
@@ -246,7 +269,7 @@ Vz.Widgets.VHC = function (config) {
 
                 if (!self.sKey && (self.availableDistis.length > 1)) {
                     // find recommended disti by region
-                    var continent = Vz.Widgets.countryContinent[$(self.form).find('[name=country]').val()];
+                    var continent = Vz.Widgets.countryContinentNEW[$(self.form).find('[name=country]').val()];
                     var result = self.availableDistis.filter(oDisti => {
                         return oDisti.isDefFor.includes(continent)
                     });
@@ -255,7 +278,7 @@ Vz.Widgets.VHC = function (config) {
                         var initialslide = self.slider.find('.distributor').index(defHoster[0]);
                     }
                     self.slider.on('init', function (event, slick) {
-                        self.slider.find('[data-slick-index='+initialslide+'] input').attr('checked', 'checked');
+                        self.slider.find('[data-slick-index=' + initialslide + '] input').attr('checked', 'checked');
                     });
 
                     // init slider
@@ -283,25 +306,13 @@ Vz.Widgets.VHC = function (config) {
                     self.slider.addClass('with-key');
                     self.slider.find('input').attr('checked', 'checked');
                 }
+                return;
             }
-
-            self.scrollToActive();
         }
     }
 
     self.prevStep = function () {
-        self.currentStep -= 1;
-        if (self.currentStep < 0) {
-            self.currentStep = 0;
-        }
-        self.markAsValid(self.currentStep, false);
-        $(self.element).find('.vhc-step.active').removeClass('active');
-        $(self.element).find('.vhc-step').eq(self.currentStep).addClass('active');
-
-        $(self.element).find('.vhc-singup-left ul li a.active').removeClass('active');
-        $(self.element).find('.vhc-singup-left ul li').eq(self.currentStep).find('a').addClass('active');
-
-        self.scrollToActive();
+        self.switchStep('prev');
     }
 
     self.scrollToActive = function () {
@@ -480,7 +491,7 @@ jQuery(document).ready(function ($) {
 
     if ($VHC.length > 0) {
 
-        Vz.utils.loadDistis(['https://test-site.virtuozzo.com/vhc-signup/distributors.js'], function () {
+        Vz.utils.loadDistis(['https://www.virtuozzo.com/vhc-signup/distributors.js'], function () {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const distributor = urlParams.get('distributor');
