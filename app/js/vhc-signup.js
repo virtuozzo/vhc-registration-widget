@@ -81,31 +81,35 @@ Vz.Widgets.VHC = function (config) {
     }
 
     self.trackSalesForce = function (sURL, oParams) {
-        $(self.element).addClass('loading');
-        $.ajax({
-            url: 'https://mprocessing.virtuozzo.com/vhc-signup/trackPardot.php',
-            headers: {
-                'X-vz-0VYe+zINV0qhfJw': 'X-Check'
-            },
-            type: "POST",
-            data: {
-                formHandler: sURL,
-                oParams: oParams
-            }
-        }).done(function (response) {
-            $(self.element).removeClass('loading');
-            $response = JSON.parse(response);
-            if ($response.code === 0) {
-                self.PersonalInfoSent = true;
-                self.switchStep('next');
-            } else {
-                self.form.find('[name=email]').focus();
-                Vz.Widgets.Modal.show(self.form.find('[name=email]'), {
-                    msg: 'Please enter a valid business email address',
-                    position: 'bottom'
-                });
-            }
-        });
+        if (self.pardotTracking) {
+            $(self.element).addClass('loading');
+            $.ajax({
+                url: 'https://mprocessing.virtuozzo.com/vhc-signup/trackPardot.php',
+                headers: {
+                    'X-vz-0VYe+zINV0qhfJw': 'X-Check'
+                },
+                type: "POST",
+                data: {
+                    formHandler: sURL,
+                    oParams: oParams
+                }
+            }).done(function (response) {
+                $(self.element).removeClass('loading');
+                $response = JSON.parse(response);
+                if ($response.code === 0) {
+                    self.PersonalInfoSent = true;
+                    self.switchStep('next');
+                } else {
+                    self.form.find('[name=email]').focus();
+                    Vz.Widgets.Modal.show(self.form.find('[name=email]'), {
+                        msg: 'Please enter a valid business email address',
+                        position: 'bottom'
+                    });
+                }
+            });
+        } else {
+            self.switchStep('next');
+        }
     }
 
     self.submit = function (e) {
@@ -228,6 +232,9 @@ Vz.Widgets.VHC = function (config) {
             if (self.currentStep === 1) {
                 self.switchStep('next');
                 initialslide = 0;
+                var userCountry = $(self.form).find('[name=country]').val();
+                var userRegion = Vz.Widgets.countryContinentNEW[$(self.form).find('[name=country]').val()];
+
                 // sort distis if default isn't setup
                 if (!self.sKey) {
                     // remove inactive distis
@@ -236,8 +243,6 @@ Vz.Widgets.VHC = function (config) {
                     })
 
                     // check is available disti for chose region
-                    var userCountry = $(self.form).find('[name=country]').val();
-                    var userRegion = Vz.Widgets.countryContinentNEW[$(self.form).find('[name=country]').val()];
                     self.availableDistis = self.availableDistis.filter(oDisti => {
                         if (oDisti.regions.length) {
                             return oDisti.regions.includes(userRegion);
@@ -268,11 +273,19 @@ Vz.Widgets.VHC = function (config) {
                 self.slider = $(self.element).find('.distributors-slider');
 
                 if (!self.sKey && (self.availableDistis.length > 1)) {
-                    // find recommended disti by region
-                    var continent = Vz.Widgets.countryContinentNEW[$(self.form).find('[name=country]').val()];
-                    var result = self.availableDistis.filter(oDisti => {
-                        return oDisti.isDefFor.includes(continent)
+                    // find recommended disti by country
+                    var result = [];
+                    result = self.availableDistis.filter(oDisti => {
+                        return oDisti.isDefFor.includes(userCountry)
                     });
+
+                    // find recommended disti by region IF DIDN'T FIND BY COUNTRY
+                    if (!result.length) {
+                        result = self.availableDistis.filter(oDisti => {
+                            return oDisti.isDefFor.includes(userRegion)
+                        });
+                    }
+
                     if (result.length && result[0].key) {
                         var defHoster = $(self.element).find('input[value="' + result[0].key + '"]').closest('.distributor');
                         var initialslide = self.slider.find('.distributor').index(defHoster[0]);
@@ -491,7 +504,7 @@ jQuery(document).ready(function ($) {
 
     if ($VHC.length > 0) {
 
-        Vz.utils.loadDistis(['https://www.virtuozzo.com/vhc-signup/distributors.js'], function () {
+        Vz.utils.loadDistis(['https://test-site.virtuozzo.com/vhc-signup/distributors.js'], function () {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const distributor = urlParams.get('distributor');
