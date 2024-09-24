@@ -221,7 +221,8 @@ Vz.Widgets.VHC = function (config) {
                         newsletter: self.form.find('#newsletter').is(':checked'),
                         terms: self.form.find('#terms').is(':checked'),
                         trial: self.form.find('#trial').is(':checked'),
-                        registration_source: self.sKey || 'Virtuozzo'
+                        registration_source: self.sKey || 'Virtuozzo',
+                        referrer: window.location.href
                     });
                 } else {
                     self.switchStep('next');
