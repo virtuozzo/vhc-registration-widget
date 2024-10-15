@@ -13,6 +13,15 @@ Vz.Widgets.VHC = function (config) {
     self.defHoster = false;
     self.pardotTracking = self.element.getAttribute('data-tracking') ? JSON.parse(self.element.getAttribute('data-tracking').toLowerCase()) : true;
     self.availableDistis = {};
+    self.availableCountries = {};
+    self.sDefCountries = {
+        "EU" : "CH",
+        "APAC" : "SG",
+        "NAMER" : "US",
+        "LATAM" : "BR",
+        "MEA" : "AE"
+    }
+    self.sDefCountry = 'US';
     self.testing = self.element.getAttribute('data-testing') ? true : false;
 
     self.render = function (options) {
@@ -28,11 +37,45 @@ Vz.Widgets.VHC = function (config) {
                 return false;
             }
             self.sKey = self.availableDistis[0].key;
+            var coutries = self.availableDistis[0].countries ? self.availableDistis[0].countries : [];
+            if (coutries.length) {
+                $.each(Vz.Widgets.countries, function (sCode, sCoutryName) {
+                    if (coutries.includes(sCode)) {
+                        self.availableCountries[sCode] = sCoutryName;
+                    }
+                });
+            }
+            var regions = self.availableDistis[0].regions ? self.availableDistis[0].regions : [];
+            if (regions.length) {
+                $.each(Vz.Widgets.countryContinent, function (sCountryCode, sRegion) {
+                    if (regions.includes(sRegion)) {
+                        coutries.push(sCountryCode);
+                    }
+                });
+                $.each(Vz.Widgets.countries, function (sCode, sCoutryName) {
+                    if (coutries.includes(sCode)) {
+                        self.availableCountries[sCode] = sCoutryName;
+                    }
+                });
+                self.sDefCountry = self.sDefCountries[regions[0]];
+            }
+
+            if (!Object.keys(self.availableCountries).length) {
+                self.availableCountries = Vz.Widgets.countries;
+            }
+
+        } else {
+            self.availableCountries = Vz.Widgets.countries;
         }
 
         sHtml = new EJS({url: self.baseUrl + 'vhc-signup/partial/widget'}).render({
             baseUrl: self.baseUrl,
-            testing: self.testing
+            testing: self.testing,
+            oCountries: {
+                keys: Object.keys(self.availableCountries),
+                values: Object.values(self.availableCountries)
+            },
+            sDefCountry: self.sDefCountry
         });
         $(self.element).append(sHtml);
 
@@ -68,7 +111,7 @@ Vz.Widgets.VHC = function (config) {
         self.iti = window.intlTelInput(self.phone, {
             preferredCountries: ['US', 'GB'],
             countrySearch: false,
-            initialCountry: "us",
+            initialCountry: self.sDefCountry.toLowerCase(),
             showSelectedDialCode: true,
             utilsScript: self.baseUrl + "vhc-signup/js/plugins/utils.js",
         });
@@ -234,7 +277,7 @@ Vz.Widgets.VHC = function (config) {
                 self.switchStep('next');
                 initialslide = 0;
                 var userCountry = $(self.form).find('[name=country]').val();
-                var userRegion = Vz.Widgets.countryContinentNEW[$(self.form).find('[name=country]').val()];
+                var userRegion = Vz.Widgets.countryContinent[$(self.form).find('[name=country]').val()];
 
                 // sort distis if default isn't setup
                 if (!self.sKey) {
