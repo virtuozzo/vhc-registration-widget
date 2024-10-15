@@ -44,6 +44,7 @@ Vz.Widgets.VHC = function (config) {
                         self.availableCountries[sCode] = sCoutryName;
                     }
                 });
+                self.sDefCountry = coutries[0];
             }
             var regions = self.availableDistis[0].regions ? self.availableDistis[0].regions : [];
             if (regions.length) {
