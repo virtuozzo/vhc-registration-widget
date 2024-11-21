@@ -540,7 +540,7 @@ Vz.Widgets.Modal = (function (that) {
             $el.popover('hide');
         };
 
-        // $el.popover('destroy');
+        $el.popover('destroy');
 
         $el.popover($.extend(oOpt, {
             html: true,
