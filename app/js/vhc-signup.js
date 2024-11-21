@@ -24,6 +24,13 @@ Vz.Widgets.VHC = function (config) {
     self.sDefCountry = 'US';
     self.testing = self.element.getAttribute('data-testing') ? true : false;
 
+    self.signupErrors = {
+        UNKNOWN: "Something went wrong. We suspect this was caused by network issues, so please try again in a few minutes. If your second attempt fails, please, email us at <a href='mailto:support.portal.issues@virtuozzo.com'>support.portal.issues@virtuozzo.com</a> to get the assistance with account creation.",
+        EMAIL_EXISTS: "A user already exists with that email address",
+        ERROR_EMAIL: "The specified email address is not allowed for registration. Please use another email or contact us at <a href='mailto:support.portal.issues@virtuozzo.com'>support.portal.issues@virtuozzo.com</a> for the assistance.",
+        EMAIL_DENY: "The specified email address is not allowed for registration.<br>Please use another email or contact us at <a href='mailto:support.portal.issues@virtuozzo.com'>support.portal.issues@virtuozzo.com</a> for the assistance."
+    };
+
     self.render = function (options) {
 
         var name = '';
@@ -172,7 +179,7 @@ Vz.Widgets.VHC = function (config) {
                 data: $(self.form).serialize(),
             }).done(function (response) {
                 if (response.result === 'error') {
-                    if (response.message === 'A user already exists with that email address') {
+                    if (response.code === 10001 || response.code === 10008) {
                         self.markAsValid(2, false);
                         self.markAsValid(1, false);
                         self.markAsValid(0, false);
@@ -184,8 +191,34 @@ Vz.Widgets.VHC = function (config) {
                         $(self.element).find('.vhc-singup-left ul li').eq(self.currentStep).find('a').addClass('active');
 
                         self.form.find('[name=email]').focus();
+
+                        var message = self.signupErrors.EMAIL_EXISTS;
+                        if (response.code === 10008) {
+                            var message = self.signupErrors.EMAIL_DENY;
+                        }
                         Vz.Widgets.Modal.show(self.form.find('[name=email]'), {
-                            msg: response.message,
+                            msg: message,
+                            position: 'bottom',
+                        });
+
+                        if ($(window).width() <= 475) {
+                            $([document.documentElement, document.body]).animate({
+                                scrollTop: $(self.form).offset().top
+                            }, 300);
+                        }
+                    }
+                    if (response.code === 10002) {
+                        self.markAsValid(2, false);
+                        self.markAsValid(1, false);
+                        self.currentStep = 1;
+                        $(self.element).find('.vhc-step.active').removeClass('active');
+                        $(self.element).find('.vhc-step').eq(self.currentStep).addClass('active');
+                        $(self.element).find('.vhc-singup-left ul li a.active').removeClass('active');
+                        $(self.element).find('.vhc-singup-left ul li').eq(self.currentStep).find('a').addClass('active');
+                        self.form.find('[name=phone]').focus();
+
+                        Vz.Widgets.Modal.show(self.form.find('[name=phone]'), {
+                            msg: 'You did not enter your phone number',
                             position: 'bottom'
                         });
 
@@ -510,6 +543,7 @@ Vz.Widgets.Modal = (function (that) {
         // $el.popover('destroy');
 
         $el.popover($.extend(oOpt, {
+            html: true,
             placement: sPos,
             trigger: 'manual',
             animation: true,
