@@ -168,9 +168,11 @@ Vz.Widgets.VHC = function (config) {
 
         var isValid = self.validStep();
         if (isValid) {
-            $(self.element).addClass('loading');
+            // $(self.element).addClass('loading');
+
+            // MAXMIND
             $.ajax({
-                url: 'https://mprocessing.virtuozzo.com/vhc-signup/sign-up.php',
+                url: 'https://mprocessing.virtuozzo.com/maxmind.php',
                 headers: {
                     'X-vz-0VYe+zINV0qhfJw': 'X-Check'
                 },
@@ -179,81 +181,122 @@ Vz.Widgets.VHC = function (config) {
                 data: $(self.form).serialize(),
             }).done(function (response) {
                 if (response.result === 'error') {
-                    if (response.code === 10001 || response.code === 10008) {
-                        self.markAsValid(2, false);
-                        self.markAsValid(1, false);
-                        self.markAsValid(0, false);
-                        self.currentStep = 0;
-                        $(self.element).find('.vhc-step.active').removeClass('active');
-                        $(self.element).find('.vhc-step').eq(self.currentStep).addClass('active');
+                    self.markAsValid(2, false);
+                    self.markAsValid(1, false);
+                    self.markAsValid(0, false);
 
-                        $(self.element).find('.vhc-singup-left ul li a.active').removeClass('active');
-                        $(self.element).find('.vhc-singup-left ul li').eq(self.currentStep).find('a').addClass('active');
+                    self.currentStep = 0;
 
-                        self.form.find('[name=email]').focus();
+                    $(self.element).find('.vhc-step.active').removeClass('active');
+                    $(self.element).find('.vhc-step').eq(self.currentStep).addClass('active');
 
-                        var message = self.signupErrors.EMAIL_EXISTS;
-                        if (response.code === 10008) {
-                            var message = self.signupErrors.EMAIL_DENY;
-                        }
-                        Vz.Widgets.Modal.show(self.form.find('[name=email]'), {
-                            msg: message,
-                            position: 'bottom',
-                        });
+                    $(self.element).find('.vhc-singup-left ul li a.active').removeClass('active');
+                    $(self.element).find('.vhc-singup-left ul li').eq(self.currentStep).find('a').addClass('active');
 
-                        if ($(window).width() <= 475) {
-                            $([document.documentElement, document.body]).animate({
-                                scrollTop: $(self.form).offset().top
-                            }, 300);
-                        }
+                    self.form.find('[name=email]').focus();
+
+                    Vz.Widgets.Modal.show(self.form.find('[name=email]'), {
+                        msg: self.signupErrors.EMAIL_DENY,
+                        position: 'bottom',
+                    });
+
+                    if ($(window).width() <= 475) {
+                        $([document.documentElement, document.body]).animate({
+                            scrollTop: $(self.form).offset().top
+                        }, 300);
                     }
-                    if (response.code === 10002) {
-                        self.markAsValid(2, false);
-                        self.markAsValid(1, false);
-                        self.currentStep = 1;
-                        $(self.element).find('.vhc-step.active').removeClass('active');
-                        $(self.element).find('.vhc-step').eq(self.currentStep).addClass('active');
-                        $(self.element).find('.vhc-singup-left ul li a.active').removeClass('active');
-                        $(self.element).find('.vhc-singup-left ul li').eq(self.currentStep).find('a').addClass('active');
-                        self.form.find('[name=phone]').focus();
+                    $(self.element).removeClass('loading');
 
-                        Vz.Widgets.Modal.show(self.form.find('[name=phone]'), {
-                            msg: 'You did not enter your phone number',
-                            position: 'bottom'
-                        });
-
-                        if ($(window).width() <= 475) {
-                            $([document.documentElement, document.body]).animate({
-                                scrollTop: $(self.form).offset().top
-                            }, 300);
-                        }
-                    }
                 } else {
-                    if (self.pardotTracking) {
-                        self.trackSalesForce('https://go.virtuozzo.com/l/148051/2024-03-05/7gdygc', {
-                            firstName: $(self.form).find('[name=firstName]').val(),
-                            lastName: $(self.form).find('[name=lastName]').val(),
-                            email: $(self.form).find('[name=email]').val(),
-                            company: $(self.form).find('[name=company]').val(),
-                            street: $(self.form).find('[name=street]').val(),
-                            country: $(self.form).find('[name=country] option:selected').text(),
-                            city: $(self.form).find('[name=city]').val(),
-                            state: $(self.form).find('[name=state]').val(),
-                            phone: $(self.form).find('[name=phone]').val(),
-                            postcode: $(self.form).find('[name=postcode]').val(),
-                            partnerId: self.slider.find('input:checked').attr('data-id'),
-                            newsletter: self.form.find('#newsletter').is(':checked'),
-                            terms: self.form.find('#terms').is(':checked'),
-                            trial: self.form.find('#trial').is(':checked'),
-                            data_disclosure_to_distributor: self.form.find('#data_disclosure_to_distributor').is(':checked'),
-                        });
-                    }
-                    $(self.element).addClass('success');
+
+                    // VHC registration
+                    $.ajax({
+                        url: 'https://mprocessing.virtuozzo.com/vhc-signup/sign-up.php',
+                        headers: {
+                            'X-vz-0VYe+zINV0qhfJw': 'X-Check'
+                        },
+                        type: "POST",
+                        dataType: 'json',
+                        data: $(self.form).serialize(),
+                    }).done(function (response) {
+                        if (response.result === 'error') {
+                            if (response.code === 10001) {
+                                self.markAsValid(2, false);
+                                self.markAsValid(1, false);
+                                self.markAsValid(0, false);
+
+                                self.currentStep = 0;
+
+                                $(self.element).find('.vhc-step.active').removeClass('active');
+                                $(self.element).find('.vhc-step').eq(self.currentStep).addClass('active');
+
+                                $(self.element).find('.vhc-singup-left ul li a.active').removeClass('active');
+                                $(self.element).find('.vhc-singup-left ul li').eq(self.currentStep).find('a').addClass('active');
+
+                                self.form.find('[name=email]').focus();
+
+                                Vz.Widgets.Modal.show(self.form.find('[name=email]'), {
+                                    msg: self.signupErrors.EMAIL_EXISTS,
+                                    position: 'bottom',
+                                });
+
+                                if ($(window).width() <= 475) {
+                                    $([document.documentElement, document.body]).animate({
+                                        scrollTop: $(self.form).offset().top
+                                    }, 300);
+                                }
+                            }
+                            if (response.code === 10002) {
+                                self.markAsValid(2, false);
+                                self.markAsValid(1, false);
+                                self.currentStep = 1;
+                                $(self.element).find('.vhc-step.active').removeClass('active');
+                                $(self.element).find('.vhc-step').eq(self.currentStep).addClass('active');
+                                $(self.element).find('.vhc-singup-left ul li a.active').removeClass('active');
+                                $(self.element).find('.vhc-singup-left ul li').eq(self.currentStep).find('a').addClass('active');
+                                self.form.find('[name=phone]').focus();
+
+                                Vz.Widgets.Modal.show(self.form.find('[name=phone]'), {
+                                    msg: 'You did not enter your phone number',
+                                    position: 'bottom'
+                                });
+
+                                if ($(window).width() <= 475) {
+                                    $([document.documentElement, document.body]).animate({
+                                        scrollTop: $(self.form).offset().top
+                                    }, 300);
+                                }
+                            }
+                        } else {
+                            if (self.pardotTracking) {
+                                self.trackSalesForce('https://go.virtuozzo.com/l/148051/2024-03-05/7gdygc', {
+                                    firstName: $(self.form).find('[name=firstName]').val(),
+                                    lastName: $(self.form).find('[name=lastName]').val(),
+                                    email: $(self.form).find('[name=email]').val(),
+                                    company: $(self.form).find('[name=company]').val(),
+                                    street: $(self.form).find('[name=street]').val(),
+                                    country: $(self.form).find('[name=country] option:selected').text(),
+                                    city: $(self.form).find('[name=city]').val(),
+                                    state: $(self.form).find('[name=state]').val(),
+                                    phone: $(self.form).find('[name=phone]').val(),
+                                    postcode: $(self.form).find('[name=postcode]').val(),
+                                    partnerId: self.slider.find('input:checked').attr('data-id'),
+                                    newsletter: self.form.find('#newsletter').is(':checked'),
+                                    terms: self.form.find('#terms').is(':checked'),
+                                    trial: self.form.find('#trial').is(':checked'),
+                                    data_disclosure_to_distributor: self.form.find('#data_disclosure_to_distributor').is(':checked'),
+                                });
+                            }
+                            $(self.element).addClass('success');
+                        }
+
+                        $(self.element).removeClass('loading');
+
+                    });
                 }
-
-                $(self.element).removeClass('loading');
-
             });
+
+
         }
     }
 
