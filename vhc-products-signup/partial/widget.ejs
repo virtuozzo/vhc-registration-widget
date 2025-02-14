@@ -1,0 +1,170 @@
+<% if (sTitle !== "false") { %>
+<h2><%= sTitle %></h2>
+<% } %>
+<div class="vhc-singup-wrapper">
+    <div class="vhc-singup-left">
+        <ul>
+            <li><a href="#vhc-step-1" class="active"><span>1</span>Contact<br/>Details</a></li>
+            <li><a href="#vhc-step-2"><span>2</span>Account<br/>Setup</a></li>
+        </ul>
+    </div>
+    <div class="vhc-singup-right">
+        <form action="#">
+            <input type="hidden" name="product" value="<%= sProduct %>">
+            <div id="vhc-step-1" class="vhc-step active">
+                <h3>Contact Information</h3>
+                <p class="step-description">Please enter your business email address - we need this to activate your
+                    account and provide your
+                    Virtuozzo Hybrid Cloud service.</p>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="firstName" class="sr-only">
+                            First name
+                        </label>
+                        <input type="text" id="firstName" name="firstName" placeholder="First Name *"
+                               value="<% if(testing) { %>test-virtuozzo<% } %>">
+                    </div>
+                    <div class="form-field">
+                        <label for="lastName" class="sr-only">
+                            Last name
+                        </label>
+                        <input type="text" id="lastName" name="lastName" placeholder="Last Name *"
+                               value="<% if(testing) { %>test-virtuozzo<% } %>">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="email" class="sr-only">
+                            Email
+                        </label>
+                        <input type="text" id="email" name="email" placeholder="Email *"
+                               value="<% if(testing) { %>test@virtuozzo.com<% } %>">
+                    </div>
+                    <div class="form-field">
+                        <label for="company" class="sr-only">
+                            Company
+                        </label>
+                        <input type="text" id="company" name="company" placeholder="Company *"
+                               value="<% if(testing) { %>virtuozzo<% } %>">
+                    </div>
+                </div>
+                <label for="newsletter" class="checkbox">
+                    <input type="checkbox" id="newsletter" name="newsletter">
+                    <span>I would like to receive news about Virtuozzo products and upcoming events. I understand that I can opt-out at any time.</span>
+                </label>
+                <label for="terms" class="checkbox">
+                    <input type="checkbox" id="terms" name="terms">
+                    <span>I have read and agree to the <a href="https://www.virtuozzo.com/legal/privacy-notice/"
+                                                          target="_blank">Privacy Notice</a> and <a
+                                href="https://www.virtuozzo.com/legal/cookie-policy/" target="_blank">Cookie Policy</a> *</span>
+                </label>
+                <label for="trial" class="checkbox">
+                    <input type="checkbox" id="trial" name="trial">
+                    <span>I agree to the <a
+                                href="https://www.virtuozzo.com/legal/virtuozzo-hybrid-cloud-services-terms-and-conditions/"
+                                target="_blank">Terms of Service</a> and <a
+                                href="https://www.virtuozzo.com/legal/hybrid-cloud-free-trial-conditions/"
+                                target="_blank">Trial Conditions</a> *</span>
+                </label>
+                <div class="step-switcher">
+                    <span class="vhc-prev">Back</span>
+                    <span class="vhc-next">Next</span>
+                </div>
+            </div>
+            <div id="vhc-step-2" class="vhc-step">
+                <h3>Account Setup and Billing Address</h3>
+                <p class="step-description">Finally, please create a secure password for your account, and provide your
+                    business billing address
+                    and contact number.</p>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="password" class="sr-only">
+                            Password
+                        </label>
+                        <span class="password-status">
+                            <span class="pass-status-bar">
+                                <span class="pass-status-bar-progress"></span>
+                            </span>
+                            <span class="pass-status-label"></span>
+                        </span>
+                        <span class="password-info">
+                            <span>i</span>
+                            <p><strong>Tips for a good password</strong><br/>Use both upper and lowercase characters<br/>Include at least one symbol (# $ ! % & etc...)<br/>Don't use dictionary words</p>
+                        </span>
+                        <input type="password" id="password" name="password" placeholder="Password *"
+                               value="<% if(testing) { %>123virtuozzo123<% } %>">
+                    </div>
+                    <div class="form-field">
+                        <label for="password-2" class="sr-only">
+                            Confirm Password
+                        </label>
+                        <input type="password" id="password-2" name="password-2" placeholder="Confirm Password *"
+                               value="<% if(testing) { %>123virtuozzo123<% } %>">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="street" class="sr-only">
+                            Street Address
+                        </label>
+                        <input type="text" id="street" name="street" placeholder="Street Address *"
+                               value="<% if(testing) { %>test-virtuozzo<% } %>">
+                    </div>
+                    <div class="form-field">
+                        <label for="country" class="sr-only">
+                            Country
+                        </label>
+                        <select name="country" id="country" class="form-control">
+                            <% for (var i = 0, sCountry; sCountry = oCountries.keys[i]; i++) { %>
+                                <% var selected = ""; %>
+                                <% if(sCountry == sDefCountry) { selected = " selected";} %>
+                                <option value="<%= sCountry %>"<%= selected %>><%= oCountries.values[i] %></option>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="city" class="sr-only">
+                            City
+                        </label>
+                        <input type="text" id="city" name="city" placeholder="City *"
+                               value="<% if(testing) { %>test-virtuozzo<% } %>">
+                    </div>
+                    <div class="form-field">
+                        <label for="state" class="sr-only">
+                            State
+                        </label>
+                        <input type="text" id="state" name="state" placeholder="State *"
+                               value="<% if(testing) { %>test-virtuozzo<% } %>">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="phone" class="sr-only">
+                            Phone Number
+                        </label>
+                        <input type="text" id="phone" name="phone" placeholder="Phone Number *"
+                               value="<% if(testing) { %>test-virtuozzo<% } %>">
+                    </div>
+                    <div class="form-field">
+                        <label for="postcode" class="sr-only">
+                            Postcode
+                        </label>
+                        <input type="text" id="postcode" name="postcode" placeholder="Postcode *"
+                               value="<% if(testing) { %>test-virtuozzo<% } %>">
+                    </div>
+                </div>
+                <div class="step-switcher">
+                    <span class="vhc-prev">Back</span>
+                    <button type="submit">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="vhc-success">
+        <h3>Success!</h3>
+        <p>We've sent you a welcome email with your log-in details, and guides on how to get started.</p>
+        <img src="<%= baseUrl %>vhc-signup/img/success-img.svg" alt="success img">
+    </div>
+</div>
