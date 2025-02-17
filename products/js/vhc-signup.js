@@ -171,7 +171,7 @@ Vz.Widgets.VHCP = function (config) {
                 } else {
                     // VHC registration
                     $.ajax({
-                        url: 'https://mprocessing.virtuozzo.com/vhc-signup/sign-up-new.php',
+                        url: 'https://mprocessing.virtuozzo.com/vhc-signup/sign-up.php',
                         headers: {
                             'X-vz-0VYe+zINV0qhfJw': 'X-Check'
                         },
