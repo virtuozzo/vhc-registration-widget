@@ -30,7 +30,7 @@ Widget addition to your site can be accomplished in a few simple steps:
     <div class=“vhc-signup-widget” data-key=“{distributor_key}“></div>
     ```
 
-    Replace the ***{distributor_key}*** placeholder with a `preKey` value from the [distributors](https://virtuozzo.com/vhc-signup/distributors.js) page.
+    Replace the ***{distributor_key}*** placeholder with a `preKey` value from the [distributors](https://www.virtuozzo.com/wp-content/themes/virtuozzo/widgets/vhc-signup/distributors.js) page.
 
 The default ready-to-work hybrid cloud signup widget looks as follows:
 

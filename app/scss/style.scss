@@ -229,6 +229,7 @@ $hoverColor: #9B2637;
     cursor: pointer;
     outline: none;
     margin: 0;
+    color: transparent;
     @media (max-width: $tablet) {
       width: 20%;
     }
@@ -707,7 +708,7 @@ $hoverColor: #9B2637;
   }
 
   .step-description {
-    margin-bottom: 30px;
+    margin-bottom: 30px !important;
   }
 
 }

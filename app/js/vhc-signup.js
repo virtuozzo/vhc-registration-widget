@@ -626,7 +626,7 @@ jQuery(document).ready(function ($) {
 
     if ($VHC.length > 0) {
 
-        Vz.utils.loadDistis(['https://www.virtuozzo.com/vhc-signup/distributors.js'], function () {
+        Vz.utils.loadDistis(['https://www.virtuozzo.com/wp-content/themes/virtuozzo/widgets/vhc-signup/distributors.js'], function () {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const distributor = urlParams.get('distributor');
