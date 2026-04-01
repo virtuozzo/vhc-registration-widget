@@ -14,6 +14,7 @@ Vz.Widgets.VHC = function (config) {
     self.pardotTracking = self.element.getAttribute('data-tracking') ? JSON.parse(self.element.getAttribute('data-tracking').toLowerCase()) : true;
     self.availableDistis = {};
     self.availableCountries = {};
+    self.widgetTitle = self.element.getAttribute('data-title') ? self.element.getAttribute('data-title') : "Virtuozzo Hybrid Cloud Sign-Up";
     self.sDefCountries = {
         "EU" : "CH",
         "APAC" : "SG",
@@ -79,6 +80,7 @@ Vz.Widgets.VHC = function (config) {
         sHtml = new EJS({url: self.baseUrl + 'vhc-signup/partial/widget'}).render({
             baseUrl: self.baseUrl,
             testing: self.testing,
+            sTitle: self.widgetTitle,
             oCountries: {
                 keys: Object.keys(self.availableCountries),
                 values: Object.values(self.availableCountries)
