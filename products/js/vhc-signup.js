@@ -9,7 +9,7 @@ Vz.Widgets.VHCP = function (config) {
     self.PersonalInfoSent = false;
     self.pardotTracking = self.element.getAttribute('data-tracking') ? JSON.parse(self.element.getAttribute('data-tracking').toLowerCase()) : true;
     self.product = self.element.getAttribute('data-product') || false;
-    self.widgetTitle = self.element.getAttribute('data-title') ? self.element.getAttribute('data-title') : "Virtuozzo Hybrid Cloud Sign-Up";
+    self.widgetTitle = self.element.getAttribute('data-title') ? self.element.getAttribute('data-title') : "Virtuozzo Cloud Sign-Up";
     self.sDefCountries = {
         "EU": "CH",
         "APAC": "SG",
