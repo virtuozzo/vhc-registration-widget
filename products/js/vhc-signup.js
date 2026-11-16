@@ -92,6 +92,20 @@ Vz.Widgets.VHCP = function (config) {
         self.iti.setCountry($(self.element).find('#country').val());
     }
 
+    // Network/server failure of an mprocessing request (non-2xx, timeout, invalid JSON):
+    // stop the spinner and show the generic error instead of hanging silently.
+    self.requestFailed = function ($anchor, jqXHR, textStatus) {
+        console.error('VHC signup request failed:', textStatus, jqXHR && jqXHR.status);
+        $(self.element).removeClass('loading');
+        if ($(self.element).hasClass('success')) return;
+        Vz.Widgets.Modal.show($anchor, {
+            msg: self.signupErrors.UNKNOWN,
+            position: 'top',
+            width: 300,
+            hideTime: 15000
+        });
+    };
+
     self.trackSalesForce = function (sURL, oParams) {
         if (self.pardotTracking) {
             $(self.element).addClass('loading');
@@ -118,6 +132,8 @@ Vz.Widgets.VHCP = function (config) {
                         position: 'bottom'
                     });
                 }
+            }).fail(function (jqXHR, textStatus) {
+                self.requestFailed(self.form.find('[name=email]'), jqXHR, textStatus);
             });
         } else {
             self.switchStep('next');
@@ -252,8 +268,12 @@ Vz.Widgets.VHCP = function (config) {
 
                         $(self.element).removeClass('loading');
 
+                    }).fail(function (jqXHR, textStatus) {
+                        self.requestFailed(self.form.find('button[type=submit]'), jqXHR, textStatus);
                     });
                 }
+            }).fail(function (jqXHR, textStatus) {
+                self.requestFailed(self.form.find('button[type=submit]'), jqXHR, textStatus);
             });
 
 

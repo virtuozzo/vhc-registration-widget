@@ -86,6 +86,20 @@ Vz.Widgets.VHCD = function (config) {
         self.iti.setCountry($(self.element).find('#country').val());
     }
 
+    // Network/server failure of an mprocessing request (non-2xx, timeout, invalid JSON):
+    // stop the spinner and show the generic error instead of hanging silently.
+    self.requestFailed = function ($anchor, jqXHR, textStatus) {
+        console.error('VHC signup request failed:', textStatus, jqXHR && jqXHR.status);
+        $(self.element).removeClass('loading');
+        if ($(self.element).hasClass('success')) return;
+        Vz.Widgets.Modal.show($anchor, {
+            msg: self.signupErrors.UNKNOWN,
+            position: 'top',
+            width: 300,
+            hideTime: 15000
+        });
+    };
+
     self.trackSalesForce = function (sURL, oParams) {
         if (self.pardotTracking) {
             $(self.element).addClass('loading');
@@ -112,6 +126,8 @@ Vz.Widgets.VHCD = function (config) {
                         position: 'bottom'
                     });
                 }
+            }).fail(function (jqXHR, textStatus) {
+                self.requestFailed(self.form.find('[name=email]'), jqXHR, textStatus);
             });
         } else {
             self.switchStep('next');
@@ -247,8 +263,12 @@ Vz.Widgets.VHCD = function (config) {
 
                         $(self.element).removeClass('loading');
 
+                    }).fail(function (jqXHR, textStatus) {
+                        self.requestFailed(self.form.find('button[type=submit]'), jqXHR, textStatus);
                     });
                 }
+            }).fail(function (jqXHR, textStatus) {
+                self.requestFailed(self.form.find('button[type=submit]'), jqXHR, textStatus);
             });
 
 
@@ -290,6 +310,8 @@ Vz.Widgets.VHCD = function (config) {
                     lastName: $(self.form).find('[name=lastName]').val(),
                     email: $(self.form).find('[name=email]').val(),
                     company: $(self.form).find('[name=company]').val(),
+                    job_title: $(self.form).find('[name=job_title]').val(),
+                    country: $(self.form).find('[name=first_country] option:selected').text(),
                     newsletter: self.form.find('#newsletter').is(':checked'),
                     terms: self.form.find('#terms').is(':checked'),
                     trial: self.form.find('#trial').is(':checked'),
@@ -386,6 +408,14 @@ Vz.Widgets.VHCD = function (config) {
                     break;
                 }
                 if (!Vz.utils.isFieldValid($(self.form).find('[name=company]'), '')) {
+                    isValid = false;
+                    break;
+                }
+                if (!Vz.utils.isFieldValid($(self.form).find('[name=job_title]'), '')) {
+                    isValid = false;
+                    break;
+                }
+                if (!Vz.utils.isFieldValid($(self.form).find('[name=first_country]'), '')) {
                     isValid = false;
                     break;
                 }

@@ -48,6 +48,27 @@
                                value="<% if(testing) { %>virtuozzo<% } %>">
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="job_title" class="sr-only">
+                            Job Title
+                        </label>
+                        <input type="text" id="job_title" name="job_title" placeholder="Job Title *"
+                               value="<% if(testing) { %>Job Title<% } %>">
+                    </div>
+                    <div class="form-field">
+                        <label for="first_country" class="sr-only">
+                            Country
+                        </label>
+                        <select name="first_country" id="first_country" class="form-control">
+                            <% for (var i = 0, sCountry; sCountry = oCountries.keys[i]; i++) { %>
+                                <% var selected = ""; %>
+                                <% if(sCountry == sDefCountry) { selected = " selected";} %>
+                                <option value="<%= sCountry %>"<%= selected %>><%= oCountries.values[i] %></option>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
                 <label for="newsletter" class="checkbox">
                     <input type="checkbox" id="newsletter" name="newsletter">
                     <span>I would like to receive news about Virtuozzo products and upcoming events. I understand that I can opt-out at any time.</span>
